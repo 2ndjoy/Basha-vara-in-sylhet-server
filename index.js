@@ -33,6 +33,15 @@ async function run() {
     res.send(services);
   });
 
+  app.get("/specific", async (req, res) => {
+    const serviceLocation = req.query.serviceLocation;
+    const size = req.query.size;
+
+    const query = { serviceLocation: serviceLocation, size: size };
+    const resuld = await aparmentsCollection.find(query).toArray();
+    res.send(resuld);
+  });
+
   app.get("/server", (req, res) => {
     res.send("Server is connected");
   });
@@ -47,3 +56,4 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log("Simple node server is running");
 });
+// What is redux?
