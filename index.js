@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require("mongodb");
 
 const port = process.env.PORT || 5000;
 
@@ -17,43 +17,40 @@ const client = new MongoClient(uri, {
 });
 
 async function run() {
-  const aparmentsCollection = client
-    .db("aparments")
-    .collection("aparmentsCollection");
+  try {
+    const aparmentsCollection = client
+      .db("aparments")
+      .collection("aparmentsCollection");
 
-  app.post("/services", async (req, res) => {
-    const services = req.body;
-    const result = await aparmentsCollection.insertOne(services);
-    res.send(result);
-  });
+    app.get("/services", async (req, res) => {
+      const query = {};
+      const services = await aparmentsCollection.find(query).toArray();
+      res.send(services);
+    });
 
-  app.get("/services", async (req, res) => {
-    const query = {};
-    const services = await aparmentsCollection.find(query).toArray();
-    res.send(services);
-  });
+    app.post("/services", async (req, res) => {
+      const services = req.body;
+      const result = await aparmentsCollection.insertOne(services);
+      res.send(result);
+    });
 
-  app.get("/specific", async (req, res) => {
-    const serviceLocation = req.query.serviceLocation;
-    const size = req.query.size;
+    app.get("/", async (req, res) => {
+      res.send("server is running");
+    });
 
-    const query = { serviceLocation: serviceLocation, size: size };
-    const resuld = await aparmentsCollection.find(query).toArray();
-    res.send(resuld);
-  });
-
-  app.get("/server", (req, res) => {
-    res.send("Server is connected");
-  });
+    app.get("/specific", async (req, res) => {
+      const serviceLocation = req.query.serviceLocation;
+      const size = req.query.size;
+      const query = { serviceLocation: serviceLocation, size: size };
+      const result = await aparmentsCollection.find(query).toArray();
+      res.send(result);
+    });
+  } finally {
+  }
 }
 
 run().catch((error) => console.log(error));
 
-app.get("/", (req, res) => {
-  res.send("Simple node server is ruunning");
-});
-
 app.listen(port, () => {
   console.log("Simple node server is running");
 });
-// What is redux?
