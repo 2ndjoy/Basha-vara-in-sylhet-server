@@ -23,6 +23,10 @@ async function run() {
       .db("aparments")
       .collection("aparmentsCollection");
 
+    const myorderCollection = client
+      .db("aparments")
+      .collection("myorderCollection");
+
     app.get("/", async (req, res) => {
       res.send("server is running");
     });
@@ -80,6 +84,26 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await aparmentsCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    app.post("/myorders", async (req, res) => {
+      const services = req.body;
+      const result = await myorderCollection.insertOne(services);
+      res.send(result);
+    });
+
+    app.get("/myorders/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const result = await myorderCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.delete("/myorders/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await myorderCollection.deleteOne(query);
       res.send(result);
     });
   } finally {
