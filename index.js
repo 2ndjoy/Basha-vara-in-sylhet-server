@@ -27,6 +27,10 @@ async function run() {
       .db("aparments")
       .collection("myorderCollection");
 
+    const userCollections = client
+      .db("aparments")
+      .collection("userCollections");
+
     app.get("/", async (req, res) => {
       res.send("server is running");
     });
@@ -104,6 +108,45 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await myorderCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await userCollections.insertOne(user);
+      res.send(result);
+    });
+
+    app.get("/users", async (req, res) => {
+      const query = {};
+      const services = await userCollections.find(query).toArray();
+      res.send(services);
+    });
+
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const result = await userCollections.find(query).toArray();
+      res.send(result);
+    });
+
+    app.put("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const nid = req.body;
+      const option = { upsert: true };
+      console.log(nid);
+
+      const updatedNid = {
+        $set: {
+          nid: nid,
+        },
+      };
+      const result = await userCollections.updateOne(
+        filter,
+        updatedNid,
+        option
+      );
       res.send(result);
     });
   } finally {
