@@ -149,6 +149,25 @@ async function run() {
       );
       res.send(result);
     });
+
+    app.put("/userss/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const nid = req.body;
+      const option = { upsert: true };
+
+      const updatedStat = {
+        $set: {
+          status: "verified",
+        },
+      };
+      const result = await userCollections.updateOne(
+        filter,
+        updatedStat,
+        option
+      );
+      res.send(result);
+    });
   } finally {
   }
 }
