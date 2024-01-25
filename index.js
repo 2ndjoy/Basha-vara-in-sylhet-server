@@ -31,6 +31,10 @@ async function run() {
       .db("aparments")
       .collection("userCollections");
 
+    const reviewCollection = client
+      .db("aparments")
+      .collection("reviewCollection");
+
     app.get("/", async (req, res) => {
       res.send("server is running");
     });
@@ -166,6 +170,23 @@ async function run() {
         updatedStat,
         option
       );
+      res.send(result);
+    });
+
+    // post review
+    app.post("/reviews", async (req, res) => {
+      const user = req.body;
+      const result = await reviewCollection.insertOne(user);
+      res.send(result);
+    });
+    // getreview
+
+    // post review
+
+    app.get("/reviews/:service_id", async (req, res) => {
+      const service_id = req.params.service_id;
+      const query = { service_id };
+      const result = await reviewCollection.find(query).toArray();
       res.send(result);
     });
   } finally {
