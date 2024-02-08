@@ -189,6 +189,13 @@ async function run() {
       const result = await reviewCollection.find(query).toArray();
       res.send(result);
     });
+
+    app.get("/orders/:renterEmail", async (req, res) => {
+      const renterEmail = req.params.renterEmail;
+      const query = { renterEmail };
+      const result = await myorderCollection.find(query).toArray();
+      res.send(result);
+    });
   } finally {
   }
 }
