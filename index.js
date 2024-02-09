@@ -198,6 +198,7 @@ async function run() {
       res.send(result);
     });
 
+    // get my clients
     app.get("/orders/:renterEmail", async (req, res) => {
       const renterEmail = req.params.renterEmail;
       const query = { renterEmail };
